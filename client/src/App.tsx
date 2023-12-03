@@ -5,8 +5,12 @@ import Items from "./components/local/items";
 import Tables from "./components/local/tables";
 import { Toaster } from "./components/ui/toaster";
 import Header from "./components/local/header";
+import { useAuth0 } from "@auth0/auth0-react";
+import { Button } from "./components/ui/button";
 
 function App() {
+  const { isAuthenticated, loginWithRedirect } = useAuth0();
+
   const router = createBrowserRouter([
     {
       path: "/",
@@ -27,12 +31,20 @@ function App() {
   ]);
   return (
     <>
-      <Header></Header>
+      {!isAuthenticated ? (
+        <Button variant={"link"} onClick={() => loginWithRedirect()}>
+          Login
+        </Button>
+      ) : (
+        <>
+          <Header></Header>
 
-      <div className="ml-64 p-2">
-        <RouterProvider router={router}></RouterProvider>
-      </div>
-      <Toaster></Toaster>
+          <div className="ml-64 p-2">
+            <RouterProvider router={router}></RouterProvider>
+          </div>
+          <Toaster></Toaster>
+        </>
+      )}
     </>
   );
 }

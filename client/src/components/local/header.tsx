@@ -1,4 +1,9 @@
+import { useAuth0 } from "@auth0/auth0-react";
+import { Button } from "../ui/button";
+
 export default function Header() {
+  const { logout } = useAuth0();
+
   return (
     <>
       <aside
@@ -41,6 +46,20 @@ export default function Header() {
               </a>
             </li>
           </ul>
+
+          <Button
+            variant="destructive"
+            className="mt-8 w-full"
+            onClick={() => {
+              logout({
+                logoutParams: {
+                  returnTo: window.location.origin,
+                },
+              });
+            }}
+          >
+            Log Out
+          </Button>
         </div>
       </aside>
     </>

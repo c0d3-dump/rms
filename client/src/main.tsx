@@ -4,6 +4,8 @@ import App from "./App.tsx";
 import "./index.css";
 import { toast } from "./components/ui/use-toast.ts";
 import axios from "axios";
+import { Auth0Provider } from "@auth0/auth0-react";
+import { env } from "./config.ts";
 
 axios.interceptors.response.use(
   (response) => {
@@ -20,6 +22,15 @@ axios.interceptors.response.use(
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <App />
+    <Auth0Provider
+      domain={env.domain}
+      clientId={env.clientId}
+      authorizationParams={{
+        redirect_uri: window.location.origin,
+      }}
+      cacheLocation="localstorage"
+    >
+      <App />
+    </Auth0Provider>
   </React.StrictMode>
 );

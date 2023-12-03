@@ -1,3 +1,5 @@
 export const env = {
-  SERVER_URL: ""
+  SERVER_URL: "",
+  domain: "",
+  clientId: ""
 };
