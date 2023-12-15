@@ -29,6 +29,7 @@ import { env } from "./config";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoginPage, setLoginPage] = useState(true);
 
   const router = createBrowserRouter([
     {
@@ -53,10 +54,14 @@ function App() {
     setIsAuthenticated(true);
   }, []);
 
+  const toggleLoginPage = useCallback(() => {
+    setLoginPage(!isLoginPage);
+  }, [isLoginPage]);
+
   useEffect(() => {
     try {
       const user = JSON.parse(localStorage.getItem("user") ?? "{}");
-      if (user && user.email && user.role) {
+      if (user && user.email) {
         setAuthenticated();
       }
     } catch (error) {
@@ -67,7 +72,14 @@ function App() {
   return (
     <>
       {!isAuthenticated ? (
-        <LoginComponent setAuthenticated={setAuthenticated}></LoginComponent>
+        isLoginPage ? (
+          <LoginComponent
+            setAuthenticated={setAuthenticated}
+            toggleLoginPage={toggleLoginPage}
+          ></LoginComponent>
+        ) : (
+          <SignupComponent toggleLoginPage={toggleLoginPage}></SignupComponent>
+        )
       ) : (
         <>
           <Header></Header>
@@ -84,6 +96,7 @@ function App() {
 
 interface AddLoginComponentProps {
   setAuthenticated: () => void;
+  toggleLoginPage: () => void;
 }
 
 function LoginComponent(props: AddLoginComponentProps) {
@@ -92,7 +105,7 @@ function LoginComponent(props: AddLoginComponentProps) {
   const onLogin = useCallback(async () => {
     const email = form.getValues().email;
     const password = form.getValues().password;
-    const res = await axios.post(`${env.SERVER_URL}/api/Users/Login`, {
+    const res = await axios.post(`${env.SERVER_URL}/api/Employees/Login`, {
       email,
       password,
     });
@@ -143,6 +156,108 @@ function LoginComponent(props: AddLoginComponentProps) {
         <CardFooter className="flex justify-between">
           <Button type="submit" onClick={onLogin}>
             Submit
+          </Button>
+          <Button type="button" variant="link" onClick={props.toggleLoginPage}>
+            signup
+          </Button>
+        </CardFooter>
+      </Card>
+    </>
+  );
+}
+
+interface AddSignupComponentProps {
+  toggleLoginPage: () => void;
+}
+
+function SignupComponent(props: AddSignupComponentProps) {
+  const form = useForm();
+
+  const onLogin = useCallback(async () => {
+    const email = form.getValues().email;
+    const password = form.getValues().password;
+    const name = form.getValues().name;
+    const contact = form.getValues().contact;
+    await axios.post(`${env.SERVER_URL}/api/Employees/signup`, {
+      email,
+      password,
+      name,
+      contact,
+    });
+    props.toggleLoginPage();
+  }, [form, props]);
+
+  return (
+    <>
+      <Card className="w-[350px] mx-auto mt-52">
+        <CardHeader>
+          <CardTitle>Signup</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Form {...form}>
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter Name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter Email" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter Password" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="contact"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Contact</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter Contact" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </Form>
+        </CardContent>
+        <CardFooter className="flex justify-between">
+          <Button type="submit" onClick={onLogin}>
+            Submit
+          </Button>
+          <Button type="button" variant="link" onClick={props.toggleLoginPage}>
+            login
           </Button>
         </CardFooter>
       </Card>

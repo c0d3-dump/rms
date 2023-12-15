@@ -1,9 +1,6 @@
-import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 
 export default function Header() {
-  const navigate = useNavigate();
-
   return (
     <>
       <aside
@@ -52,7 +49,7 @@ export default function Header() {
             className="mt-8 w-full"
             onClick={() => {
               localStorage.clear();
-              navigate("/");
+              window.location.href = "/";
               window.location.reload();
             }}
           >
