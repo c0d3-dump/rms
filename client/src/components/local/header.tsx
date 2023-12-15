@@ -1,8 +1,8 @@
-import { useAuth0 } from "@auth0/auth0-react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 
 export default function Header() {
-  const { logout } = useAuth0();
+  const navigate = useNavigate();
 
   return (
     <>
@@ -51,11 +51,9 @@ export default function Header() {
             variant="destructive"
             className="mt-8 w-full"
             onClick={() => {
-              logout({
-                logoutParams: {
-                  returnTo: window.location.origin,
-                },
-              });
+              localStorage.clear();
+              navigate("/");
+              window.location.reload();
             }}
           >
             Log Out

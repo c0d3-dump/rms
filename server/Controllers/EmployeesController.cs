@@ -31,11 +31,27 @@ namespace rms.Controllers
     }
 
     [HttpPost]
+    [Route("login")]
+    public async Task<IActionResult> LoginUser(LoginUserRequest loginUserRequest)
+    {
+      var user = await database.Employees.Where(u => u.Email == loginUserRequest.Email).FirstAsync();
+
+      if (user != null && user.Password == loginUserRequest.Password)
+      {
+        return Ok(user);
+      }
+      return NotFound();
+    }
+
+    [HttpPost]
+    [Route("signup")]
     public async Task<IActionResult> AddEmployee(AddEmployeeRequest addEmployeeRequest)
     {
       var newEmployee = new Employee()
       {
         Name = addEmployeeRequest.Name,
+        Email = addEmployeeRequest.Email,
+        Password = addEmployeeRequest.Password,
         Contact = addEmployeeRequest.Contact
       };
 

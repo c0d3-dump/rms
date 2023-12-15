@@ -9,8 +9,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors();
 
+// options.UseSqlServer(builder.Configuration.GetConnectionString("RmsConnectionString"))
 builder.Services.AddDbContext<Database>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("RmsConnectionString"))
+    options.UseInMemoryDatabase("rmsdb")
 );
 
 builder.Services.AddControllersWithViews();
